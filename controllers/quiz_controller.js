@@ -12,8 +12,7 @@ exports.load = function(req, res, next, quizId) {
   ).catch(function(error) { next(error);});
 };
 // GET /quizes
-exports.index = function(req, res) {
-	console.log(req.query);
+exports.index = function(req, res) {	
   if(req.query.search){  	  
   	  var busqueda = req.query.search.split(' ').join('%');
   		models.Quiz.findAll({where: ["pregunta like ?", '%'+busqueda+'%']}).then(
