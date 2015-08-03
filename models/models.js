@@ -50,8 +50,8 @@ sequelize.sync().then(function() {
       // 	         })
       // o mejor hacerlo añadirlas en bloque
       Quiz.bulkCreate( 
-        [ {pregunta: 'Capital de Italia',   respuesta: 'Roma'},
-          {pregunta: 'Capital de Portugal', respuesta: 'Lisboa'}
+        [ {pregunta: 'Capital de Italia',   respuesta: 'Roma', categoria: 'humanidades'},
+          {pregunta: 'Capital de Portugal', respuesta: 'Lisboa', categoria: 'humanidades'}
         ]
       )
       .then(function(){console.log('Base de datos inicializada')});
