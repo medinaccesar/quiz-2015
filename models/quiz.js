@@ -5,6 +5,7 @@ module.exports = function(sequelize, DataTypes) {
   //           { pregunta:  DataTypes.STRING,
   //             respuesta: DataTypes.STRING,
   //           });
+  var enumeracion=['otro', 'humanidades','ocio','ciencia','tecnologia'];
   return sequelize.define('Quiz',
     { pregunta: {
         type: DataTypes.STRING,
@@ -15,8 +16,12 @@ module.exports = function(sequelize, DataTypes) {
         validate: { notEmpty: {msg: "-> Falta la respuesta"}}
       },
       categoria: {
-        type: DataTypes.STRING,
-        validate: { notEmpty: {msg: "-> Falta la categoría"}}
+        type: DataTypes.ENUM(enumeracion),
+        validate: { isIn: {
+                           args: [enumeracion],
+                           msg: "-> La categoría debe ser una de las permitidas: "+enumeracion.toString()
+                          }
+                  }
       }
     }
   );
