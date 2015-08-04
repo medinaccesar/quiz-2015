@@ -2,8 +2,13 @@
 var models = require('../models/models.js');
 // Autoload - factoriza el código si ruta incluye :quizId
 exports.load = function(req, res, next, quizId) {
-  models.Quiz.find(quizId).then(
-    function(quiz) {
+ // models.Quiz.find(quizId).then(
+  //  function(quiz) {
+    console.log("antess");
+  models.Quiz.find({
+            where: {id: Number(quizId)},
+            include: [{model: models.Comment}]
+   }).then(function(quiz) {   
       if (quiz) {
         req.quiz = quiz;
         next();
@@ -11,11 +16,15 @@ exports.load = function(req, res, next, quizId) {
     }
   ).catch(function(error) { next(error);});
 };
-// GET /quizes
+//GET /quizes
 exports.index = function(req, res) {	
   if(req.query.search){  	  
   	  var busqueda = req.query.search.split(' ').join('%');
-  		models.Quiz.findAll({where: ["pregunta like ?", '%'+busqueda+'%']}).then(
+  		models.Quiz.findAll(
+        {
+          where: ["lower(pregunta) like lower(?)", '%'+busqueda+'%'],
+          order: 'pregunta ASC'
+      }).then(
   			function(quizes) {
 		      res.render('quizes/index', { quizes: quizes, errors: []});
 		    }
@@ -28,6 +37,26 @@ exports.index = function(req, res) {
     }
   ).catch(function(error) { next(error);});
 };
+
+// GET /quizes  otra forma:
+ // exports.index = function(req, res) {
+ // //búsqueda
+ //   var inputValueSearch = (req.query.search || "texto_a_buscar");
+ //   var search = '%';
+   
+ //   if(req.query.search) {
+ //       search=search+req.query.search+'%';
+ //       search=search.replace(/\s+/g,'%');
+ //   }
+ //   models.Quiz.findAll(
+ //     { where: ["lower(pregunta) like lower(?)",search],
+ //       order: 'pregunta ASC'
+ //     } 
+ //   ).then(function(quizes){
+ //    res.render('quizes/index.ejs',{quizes: quizes, search: inputValueSearch, errors: []});
+ //  }).catch(function(error){next(error)});
+ // };
+
 
 // GET /quizes/:quizId
 exports.show = function(req, res) {
