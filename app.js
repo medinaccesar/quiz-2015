@@ -44,6 +44,27 @@ if (!req.path.match(/\/login|\/logout/)) {
   next();
 });
 
+//MW comprobación de la sesión
+app.use(function(req, res, next){
+
+    if(req.session.user){ //si hay sesión
+        var ahora_ml = new Date().getTime();
+        var dos_minutos_ml = 120000;//dos minutos en milisegundos
+
+        if(req.session.user.tiempo){ // si está establecida tiempo      
+            //si han pasado más de 120 segundos redireccionamos para destruir la sesión
+            if(ahora_ml - res.locals.session.user.tiempo  > dos_minutos_ml){                
+                res.redirect('/logout');
+            }
+
+        }else{            
+            req.session.user.tiempo = ahora_ml; 
+        }     
+    } 
+    next();
+});
+
+
 
 app.use('/', routes);
 //app.use('/users', users);//---
