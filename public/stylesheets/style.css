@@ -12,7 +12,7 @@ nav span             { margin: 0px 10px 0px 0px;}
 
 tr   				 { text-align: left; padding-right: 5px;padding-left: 5px;}
 
-#ErrorMsgs           { color: #f61; font-size: smaler;}
+#ErrorMsgs           { color: #f61; font-size: smaller;}
 .right 				 { float: right;}   				
 
 .rdo 				 { font-weight: bold;text-align: center;padding-left: 25px;}
