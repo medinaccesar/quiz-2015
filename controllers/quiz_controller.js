@@ -1,5 +1,8 @@
 
 var models = require('../models/models.js');
+
+
+
 // Autoload - factoriza el código si ruta incluye :quizId
 exports.load = function(req, res, next, quizId) {
  // models.Quiz.find(quizId).then(
@@ -15,6 +18,20 @@ exports.load = function(req, res, next, quizId) {
     }
   ).catch(function(error) { next(error);});
 };
+
+// MW que permite acciones solamente si el quiz objeto pertenece al usuario o si es cuenta admin
+exports.ownershipRequired = function(req, res, next){
+    var objQuizOwner = req.quiz.UserId;
+    var logUser = req.session.user.id;
+    var isAdmin = req.session.user.isAdmin;
+
+    if (isAdmin || objQuizOwner === logUser) {
+        next();
+    } else {
+        res.redirect('/');
+    }
+};
+
 //GET /quizes
 exports.index = function(req, res) {	
   if(req.query.search){  	  

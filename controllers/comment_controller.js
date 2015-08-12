@@ -15,6 +15,30 @@ exports.load = function(req, res, next, commentId) {
   ).catch(function(error){next(error)});
 };
 
+// MW que permite acciones solamente si el quiz al que pertenece el comentario objeto 
+// pertenece al usuario (ya ingresado) o si es cuenta admin
+exports.ownershipRequired = function(req, res, next){
+    models.Quiz.find({
+            where: {
+                  id: Number(req.comment.QuizId)
+            }
+        }).then(function(quiz) {
+            if (quiz) {
+                var objQuizOwner = quiz.UserId;
+                var logUser = req.session.user.id;
+                var isAdmin = req.session.user.isAdmin;
+
+                console.log(objQuizOwner, logUser, isAdmin);
+
+                if (isAdmin || objQuizOwner === logUser) {
+                    next();
+                } else {
+                    res.redirect('/');
+                }
+            } else{next(new Error('No existe quizId=' + quizId))}
+        }
+    ).catch(function(error){next(error)});
+};
 
 // GET /quizes/:quizId/comments/new
 exports.new = function(req, res) {
