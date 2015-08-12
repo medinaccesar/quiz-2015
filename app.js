@@ -33,16 +33,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Helpers dinamicos:
 app.use(function(req, res, next) {
+    // si no existe lo inicializa
+    if (!req.session.redir) {
+        req.session.redir = '/';
+    }
+    // guardar path en session.redir para despues de login
+    if (!req.path.match(/\/login|\/logout|\/user/)) {
+        req.session.redir = req.path;
+     }
 
-// guardar path en session.redir para despues de login
-if (!req.path.match(/\/login|\/logout/)) {
-    req.session.redir = req.path;
- }
-
-  // Hacer visible req.session en las vistas
-  res.locals.session = req.session;
-  next();
+    // Hacer visible req.session en las vistas
+    res.locals.session = req.session;
+    next();
 });
+
 
 //MW Se comprueba la sesión a fin de desconectar si han transcurrido más de dos min
 app.use(function(req, res, next){
